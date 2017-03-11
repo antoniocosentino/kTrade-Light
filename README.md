@@ -1,4 +1,6 @@
-# kTrade-light
-A lighter version of kTrade trading bot
+![kTrade](/images/ktrade_logo.png?raw=true "kTrade Logo")
 
-test
+A trading bot for cAlgo developed in C#
+
+## Description
+kTrade Light is a lighter version of kTrade Bot. See kTrade repository for more detailed information.
