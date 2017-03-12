@@ -14,6 +14,9 @@ namespace cAlgo
         private HeikenAshi _heikenAshi;
         private int kcounter;
         private bool is_position_open;
+        private int dayotw;
+        private int pday;
+        private int countpositions;
 
 
         [Parameter("Contracts (EURO)", DefaultValue = 100000, MinValue = 1, MaxValue = 100000000)]
@@ -25,15 +28,19 @@ namespace cAlgo
         [Parameter("Stop Loss (pips)", DefaultValue = 0, MinValue = 0, MaxValue = 100000000)]
         public int stoploss { get; set; }
 
+        [Parameter("Daily Positions", DefaultValue = 0, MinValue = 0, MaxValue = 100)]
+        public int dailypositions { get; set; }
+
         //
 
         protected override void OnStart()
         {
-            // Put your initialization logic here
             Print("kTrade Light started");
             Print("Server time is {0}", Server.Time.AddHours(1));
             _heikenAshi = Indicators.GetIndicator<HeikenAshi>(1);
             kcounter = 0;
+            countpositions = 0;
+            pday = (int)Server.Time.DayOfWeek;
             is_position_open = false;
             Positions.Closed += PositionsOnClosed;
         }
@@ -41,21 +48,31 @@ namespace cAlgo
         protected override void OnBar()
         {
             kcounter++;
-
+            dayotw = (int)Server.Time.DayOfWeek;
 
             if (is_position_open == false)
             {
 
-                Print("Opening position");
-                is_position_open = true;
-
-                if (_heikenAshi.xOpen.Last(0) < _heikenAshi.xClose.Last(0))
+                if (dayotw != pday)
                 {
-                    var result = ExecuteMarketOrder(TradeType.Buy, Symbol, ncontracts, "kTrade Light", stoploss, takeprofit);
+                    countpositions = 0;
                 }
-                else
+
+                if (dailypositions == 0 || countpositions < dailypositions)
                 {
-                    var result = ExecuteMarketOrder(TradeType.Sell, Symbol, ncontracts, "kTrade Light", stoploss, takeprofit);
+                    pday = dayotw;
+                    countpositions++;
+                    Print("Opening position");
+                    is_position_open = true;
+
+                    if (_heikenAshi.xOpen.Last(0) < _heikenAshi.xClose.Last(0))
+                    {
+                        var result = ExecuteMarketOrder(TradeType.Buy, Symbol, ncontracts, "kTrade Light", stoploss, takeprofit);
+                    }
+                    else
+                    {
+                        var result = ExecuteMarketOrder(TradeType.Sell, Symbol, ncontracts, "kTrade Light", stoploss, takeprofit);
+                    }
                 }
 
             }
