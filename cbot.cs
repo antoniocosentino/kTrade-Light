@@ -35,7 +35,7 @@ namespace cAlgo
 
         protected override void OnStart()
         {
-            Print("kTrade Light started");
+            Print("kTrade Light Started");
             Print("Server time is {0}", Server.Time.AddHours(1));
             _heikenAshi = Indicators.GetIndicator<HeikenAshi>(1);
             kcounter = 0;
