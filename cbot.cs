@@ -62,7 +62,7 @@ namespace cAlgo
                 {
                     pday = dayotw;
                     countpositions++;
-                    Print("Opening position");
+                    Print("Opening Position");
                     is_position_open = true;
 
                     if (_heikenAshi.xOpen.Last(0) < _heikenAshi.xClose.Last(0))
